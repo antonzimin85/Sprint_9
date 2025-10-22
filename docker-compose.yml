@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  selenoid:
+    image: "aerokube/selenoid:latest"
+    platform: linux/amd64
+    ports:
+      - "4444:4444"
+      - "5900:5900"
+    networks:
+      - selenoid
+    volumes:
+      - "./selenoid/browser.json:/selenoid/browser.json"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    command: [ "-conf", "/selenoid/browser.json", "-container-network", "selenoid" ]
+    environment:
+      - TZ=UTC
+
+  selenoid-ui:
+    image: "aerokube/selenoid-ui:latest"
+    platform: linux/amd64
+    container_name: selenoid-ui
+    ports:
+      - "8080:8080"
+    networks:
+      - selenoid
+    command: [ "--selenoid-uri", "http://selenoid:4444" ]
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tests
+    volumes:
+      - ".:/app"
+    depends_on:
+      - selenoid
+    networks:
+      - selenoid
+    command: [ "pytest", "--alluredir=allure-results" ]
+
+networks:
+  selenoid:
+    name: selenoid
