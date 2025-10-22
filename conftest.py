@@ -2,6 +2,7 @@ import os
 import pytest
 from faker import Faker
 from selenium import webdriver
+from selenium.webdriver.ie.webdriver import WebDriver
 
 from pages.create_recipe_page import CreateRecipePage
 from pages.recipe_page import RecipePage
@@ -17,7 +18,6 @@ def driver(request):
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
-    options.add_argument("--window-size=1920,1080")
     options.add_argument('--disable-gpu')
     options.add_argument('--disable-software-rasterizer')
     options.add_argument("--start-maximized")
