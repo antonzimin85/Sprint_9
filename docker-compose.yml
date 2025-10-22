@@ -12,7 +12,6 @@ services:
     volumes:
       - "./selenoid/browser.json:/selenoid/browser.json"
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./video:/opt/selenoid/video"
     command: [ "-conf", "/selenoid/browser.json", "-container-network", "selenoid" ]
     environment:
       - TZ=UTC

@@ -1,0 +1,39 @@
+name: Selenoid Tests Workflow
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  run-selenoid-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Compose
+        uses: docker/setup-buildx-action@v3
+
+      - name: Pull selenoid image
+        run: docker pull selenoid/chrome:128.0
+
+      - name: Start services (Selenoid + UI)
+        run: docker compose up -d selenoid selenoid-ui
+
+      - name: Wait for Selenoid to become ready
+        run: |
+          echo "Waiting for Selenoid..."
+          for i in {1..30}; do
+            if curl -s http://localhost:4444/status | grep -q '"ready":true'; then
+              echo "Selenoid is ready"
+              break
+            fi
+            echo "Still waiting..."
+            sleep 3
+          done
+
+      - name: Run tests
+        run: docker compose run --rm tests
+
+      - name: Stop services
+        if: always()
+        run: docker compose down
