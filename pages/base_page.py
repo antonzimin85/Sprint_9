@@ -1,5 +1,3 @@
-from selenium.common import TimeoutException
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -38,28 +36,9 @@ class BasePage:
             expected_conditions.visibility_of_element_located(element_locator)
         ).is_displayed()
 
-    def wait_element_disappear(self, element_locator, timeout=TIMEOUT):
-        WebDriverWait(self.driver, timeout).until(
-            expected_conditions.invisibility_of_element_located(element_locator)
-        )
-
     def check_element_is_visible(self, element_locator, timeout=TIMEOUT):
         return (
             WebDriverWait(self.driver, timeout)
             .until(expected_conditions.visibility_of_element_located(element_locator))
             .is_displayed()
         )
-
-    def check_element_is_not_visible(self, element_locator, timeout=TIMEOUT):
-        return WebDriverWait(self.driver, timeout).until(
-            expected_conditions.invisibility_of_element_located(element_locator)
-        )
-
-    def is_element_present(self, locator, timeout=TIMEOUT):
-        try:
-            WebDriverWait(self.driver, timeout).until(
-                expected_conditions.presence_of_element_located(locator)
-            )
-            return True
-        except TimeoutException:
-            return False

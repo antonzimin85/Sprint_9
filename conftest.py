@@ -2,7 +2,6 @@ import os
 import pytest
 from faker import Faker
 from selenium import webdriver
-from selenium.webdriver.ie.webdriver import WebDriver
 
 from pages.create_recipe_page import CreateRecipePage
 from pages.recipe_page import RecipePage
